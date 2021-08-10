@@ -30,6 +30,7 @@ li.payment-options {
   line-height: 1.5;
   margin-bottom: 16px;
   padding-left: 8px;
+  background: green;
 }
 
 ul.payment-info {
@@ -47,9 +48,105 @@ button#web3modal_btn:hover {
 
 button#uniswap_btn {
   margin-left: 8px;
-  background: #FF007A;
+  background: #ff007a;
 }
 
 button#uniswap_btn:hover {
   box-shadow: none;
 }
+
+/* 
+  CSS only mainnet/layer 2 separators BEGIN ===
+*/
+#id_payment_ethereum-currency_type .radio:nth-child(1)::before {
+  content: "Ethereum Mainnet";
+  display: block;
+  margin-bottom: 8px;
+  text-decoration: underline;
+}
+
+/* 
+  Forced to premake selectors for various numbers of mainnet items - there is no way to dynamically generate this, which is why there's so many selectors - should
+  cover any realistic amount of mainnet payment options, but if not, new selectors can be added
+
+  The reason we can't just add the classes directly to the affected radios is a limitation of Django forms RadioSelect widget not allowing that out of the box - there
+  are probably ways to customize this further but out of scope for now
+*/
+.n-mainnet-1 .radio:nth-child(2)::before,
+.n-mainnet-2 .radio:nth-child(3)::before,
+.n-mainnet-3 .radio:nth-child(4)::before,
+.n-mainnet-4 .radio:nth-child(5)::before,
+.n-mainnet-5 .radio:nth-child(6)::before,
+.n-mainnet-6 .radio:nth-child(7)::before,
+.n-mainnet-7 .radio:nth-child(8)::before,
+.n-mainnet-8 .radio:nth-child(9)::before,
+.n-mainnet-9 .radio:nth-child(10)::before {
+  content: "Layer 2";
+  display: block;
+  margin-bottom: 8px;
+  text-decoration: underline;
+}
+
+.n-arbitrum-1 .radio:nth-child(2)::before,
+.n-arbitrum-2 .radio:nth-child(3)::before,
+.n-arbitrum-3 .radio:nth-child(4)::before,
+.n-arbitrum-4 .radio:nth-child(5)::before,
+.n-arbitrum-5 .radio:nth-child(6)::before,
+.n-arbitrum-6 .radio:nth-child(7)::before,
+.n-arbitrum-7 .radio:nth-child(8)::before,
+.n-arbitrum-8 .radio:nth-child(9)::before,
+.n-arbitrum-9 .radio:nth-child(10)::before {
+  content: "Arbitrum";
+  display: block;
+  margin-left: 8px;
+  margin-bottom: 8px;
+  text-decoration: underline;
+}
+
+.n-optimism-1 .radio:nth-child(2)::before,
+.n-optimism-2 .radio:nth-child(3)::before,
+.n-optimism-3 .radio:nth-child(4)::before,
+.n-optimism-4 .radio:nth-child(5)::before,
+.n-optimism-5 .radio:nth-child(6)::before,
+.n-optimism-6 .radio:nth-child(7)::before,
+.n-optimism-7 .radio:nth-child(8)::before,
+.n-optimism-8 .radio:nth-child(9)::before,
+.n-optimism-9 .radio:nth-child(10)::before {
+  content: "Optimism";
+  display: block;
+  margin-left: 8px;
+  margin-bottom: 8px;
+  text-decoration: underline;
+}
+
+/*
+  nm = 2
+  na = 4
+  no = 4
+
+  => 
+
+  .nm-2
+
+  +
+
+  .na-6 (nm + na)
+
+  + 
+
+  .no-10 (nm + na + no)
+*/
+
+/* 
+.n-mainnet-1 .n-arbitrum-1 .radio:nth-child(3)
+.n-mainnet-1 .n-arbitrum-2 .radio:nth-child(4)
+...
+
+.n-mainnet-2 .n-arbitrum-1 .radio:nth-child(4)
+...
+
+.n-mainnet-1 .n-arbitrum-1 .n-optimism-1 .radio:nth-child(3); */
+
+/* 
+  CSS only mainnet/layer 2 separators END ===
+*/

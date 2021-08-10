@@ -6,6 +6,7 @@ import json
 
 from django import forms
 from django.core.exceptions import ImproperlyConfigured
+from django.forms import fields
 from django.http import HttpRequest
 from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
@@ -132,18 +133,32 @@ class Ethereum(BasePaymentProvider):
     @property
     def payment_form_fields(self):
         currency_type_choices = ()
+        currency_type_choices_mainnet = ()
+        # currency_type_choices_arbitrum = ()
+        # currency_type_choices_optimism = ()
         network_ids_selected = json.loads(self.settings._NETWORKS)
+
+        if self.settings.ETH_RATE:
+            for network_id in network_ids_selected:
+                currency_choice = all_network_ids_to_networks[
+                    network_id
+                ].eth_currency_choice
+
+                if "-Ethereum" in currency_choice[0][0]:
+                    currency_type_choices_mainnet += currency_choice 
+                else: 
+                    currency_type_choices += currency_choice
 
         if self.settings.DAI_RATE:
             for network_id in network_ids_selected:
-                currency_type_choices += all_network_ids_to_networks[
+                currency_choice = all_network_ids_to_networks[
                     network_id
                 ].dai_currency_choice
-        if self.settings.ETH_RATE:
-            for network_id in network_ids_selected:
-                currency_type_choices += all_network_ids_to_networks[
-                    network_id
-                ].eth_currency_choice
+
+                if "-Ethereum" in currency_choice[0][0]:
+                    currency_type_choices_mainnet += currency_choice 
+                else: 
+                    currency_type_choices += currency_choice
 
         if len(currency_type_choices) == 0:
             raise ImproperlyConfigured("No currencies configured")
@@ -156,14 +171,13 @@ class Ethereum(BasePaymentProvider):
                     forms.ChoiceField(
                         label=_("Payment currency"),
                         help_text=_("Select the currency you will use for payment."),
-                        widget=forms.RadioSelect,
-                        choices=currency_type_choices,
-                        initial="ETH",
+                        widget=forms.RadioSelect(attrs={"class": "n-mainnet-" + str(len(currency_type_choices_mainnet))}),
+                        choices=currency_type_choices_mainnet + currency_type_choices,
+                        initial="ETH"
                     ),
                 )
             ]
         )
-
         return form_fields
 
     def checkout_confirm_render(self, request):
