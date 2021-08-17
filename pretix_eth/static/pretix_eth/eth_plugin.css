@@ -56,35 +56,94 @@ button#uniswap_btn:hover {
 }
 
 /* 
-  CSS only mainnet/layer 2 separators BEGIN ===
+  PAYMENT FORM STYLING BEGIN ===
 */
-#id_payment_ethereum-currency_type .radio:nth-child(1)::before {
+#id_payment_ethereum-currency_type.eth-payment-options
+  .radio:nth-child(1)::before {
   content: "Ethereum Mainnet";
   display: block;
   margin-bottom: 8px;
-  text-decoration: underline;
+  font-weight: bold;
+  font-size: 1.8rem;
+  order: 1;
+}
+
+#id_payment_ethereum-currency_type.eth-payment-options
+  .radio:nth-child(1)::after {
+  content: "Some descriptive text";
+  display: block;
+  font-size: 14px;
+  order: 0;
+}
+
+#id_payment_ethereum-currency_type.eth-payment-options
+  .radio:first-child
+  label {
+  order: 2;
+}
+
+#id_payment_ethereum-currency_type.eth-payment-options .radio {
+  display: flex;
+  flex-direction: column;
+}
+
+#id_payment_ethereum-currency_type.eth-payment-options .radio label {
+  display: flex;
+  border: 1px solid rgb(216, 216, 216);
+  border-radius: 2px;
+  padding: 8px 8px;
+}
+
+#id_payment_ethereum-currency_type.eth-payment-options .radio label:hover {
+  background: #7f5a9121;
+  font-weight: 600;
+}
+
+#id_payment_ethereum-currency_type.eth-payment-options .radio label input {
+  top: -1px;
+  position: relative;
+  margin-left: 4px;
+  margin-right: 6px;
 }
 
 /* 
-  Forced to premake selectors for various numbers of mainnet items - there is no way to dynamically generate this, which is why there's so many selectors - should
-  cover any realistic amount of mainnet payment options, but if not, new selectors can be added
+  We have limited access to the DOM without diving too deep into django/pretix (which is out of scope for now), but we are able to dynamically insert a class on the payment form options container - 
+  this gives us access to style anything within the container
 
-  The reason we can't just add the classes directly to the affected radios is a limitation of Django forms RadioSelect widget not allowing that out of the box - there
-  are probably ways to customize this further but out of scope for now
+  The goal is to insert separators between different categories of payment options (mainnet, layer2, optimism, etc.); we can use pseudo elements for this, but we can't know in advance how many of each payment 
+  option we have (and by extension where to put in the separators) - for this reason we have to precreate a ton of different selector cases to catch any number of payment options. 
+  This is admittedly hacky, but it does the job for now - if further customization is needed at a later time, we should look into creating our own radio select widget and/or extending the default django form
 */
-.n-mainnet-1 .radio:nth-child(2)::before,
-.n-mainnet-2 .radio:nth-child(3)::before,
-.n-mainnet-3 .radio:nth-child(4)::before,
-.n-mainnet-4 .radio:nth-child(5)::before,
-.n-mainnet-5 .radio:nth-child(6)::before,
-.n-mainnet-6 .radio:nth-child(7)::before,
-.n-mainnet-7 .radio:nth-child(8)::before,
-.n-mainnet-8 .radio:nth-child(9)::before,
-.n-mainnet-9 .radio:nth-child(10)::before {
+.n-mainnet-1 .radio:nth-child(1)::after,
+.n-mainnet-2 .radio:nth-child(2)::after,
+.n-mainnet-3 .radio:nth-child(3)::after,
+.n-mainnet-4 .radio:nth-child(4)::after,
+.n-mainnet-5 .radio:nth-child(5)::after,
+.n-mainnet-6 .radio:nth-child(6)::after,
+.n-mainnet-7 .radio:nth-child(7)::after,
+.n-mainnet-8 .radio:nth-child(8)::after,
+.n-mainnet-9 .radio:nth-child(9)::after {
   content: "Layer 2";
   display: block;
-  margin-bottom: 8px;
-  text-decoration: underline;
+  font-size: 1.8rem;
+  font-weight: 900;
+  order: 2;
+}
+
+.n-mainnet-1 .radio:nth-child(1)::before,
+.n-mainnet-2 .radio:nth-child(2)::before,
+.n-mainnet-3 .radio:nth-child(3)::before,
+.n-mainnet-4 .radio:nth-child(4)::before,
+.n-mainnet-5 .radio:nth-child(5)::before,
+.n-mainnet-6 .radio:nth-child(6)::before,
+.n-mainnet-7 .radio:nth-child(7)::before,
+.n-mainnet-8 .radio:nth-child(8)::before,
+.n-mainnet-9 .radio:nth-child(9)::before {
+  margin-top: 8px;
+  content: "Some descriptive text";
+  display: block;
+  font-size: 14px;
+  order: 1;
 }
 
 .n-arbitrum-1 .radio:nth-child(2)::before,
@@ -95,12 +154,52 @@ button#uniswap_btn:hover {
 .n-arbitrum-6 .radio:nth-child(7)::before,
 .n-arbitrum-7 .radio:nth-child(8)::before,
 .n-arbitrum-8 .radio:nth-child(9)::before,
-.n-arbitrum-9 .radio:nth-child(10)::before {
-  content: "Arbitrum";
+.n-arbitrum-9 .radio:nth-child(10)::before,
+.n-arbitrum-10 .radio:nth-child(11)::before,
+.n-arbitrum-11 .radio:nth-child(12)::before,
+.n-arbitrum-12 .radio:nth-child(13)::before,
+.n-arbitrum-13 .radio:nth-child(14)::before,
+.n-arbitrum-14 .radio:nth-child(15)::before,
+.n-arbitrum-15 .radio:nth-child(16)::before,
+.n-arbitrum-16 .radio:nth-child(17)::before,
+.n-arbitrum-17 .radio:nth-child(18)::before,
+.n-arbitrum-18 .radio:nth-child(19)::before,
+.n-arbitrum-19 .radio:nth-child(20)::before {
+  content: "• Arbitrum";
   display: block;
-  margin-left: 8px;
+  background: #9ebfdc;
   margin-bottom: 8px;
-  text-decoration: underline;
+  font-size: 1.4rem;
+  font-weight: 900;
+  padding: 12px 12px;
+}
+
+.n-zk-sync-1 .radio:nth-child(2)::before,
+.n-zk-sync-2 .radio:nth-child(3)::before,
+.n-zk-sync-3 .radio:nth-child(4)::before,
+.n-zk-sync-4 .radio:nth-child(5)::before,
+.n-zk-sync-5 .radio:nth-child(6)::before,
+.n-zk-sync-6 .radio:nth-child(7)::before,
+.n-zk-sync-7 .radio:nth-child(8)::before,
+.n-zk-sync-8 .radio:nth-child(9)::before,
+.n-zk-sync-9 .radio:nth-child(10)::before,
+.n-zk-sync-10 .radio:nth-child(11)::before,
+.n-zk-sync-11 .radio:nth-child(12)::before,
+.n-zk-sync-12 .radio:nth-child(13)::before,
+.n-zk-sync-13 .radio:nth-child(14)::before,
+.n-zk-sync-14 .radio:nth-child(15)::before,
+.n-zk-sync-15 .radio:nth-child(16)::before,
+.n-zk-sync-16 .radio:nth-child(17)::before,
+.n-zk-sync-17 .radio:nth-child(18)::before,
+.n-zk-sync-18 .radio:nth-child(19)::before,
+.n-zk-sync-19 .radio:nth-child(20)::before {
+  content: "• ZKSync";
+  display: block;
+  background: #cfd0ff;
+  margin-bottom: 8px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  padding: 12px 12px;
 }
 
 .n-optimism-1 .radio:nth-child(2)::before,
@@ -111,42 +210,26 @@ button#uniswap_btn:hover {
 .n-optimism-6 .radio:nth-child(7)::before,
 .n-optimism-7 .radio:nth-child(8)::before,
 .n-optimism-8 .radio:nth-child(9)::before,
-.n-optimism-9 .radio:nth-child(10)::before {
-  content: "Optimism";
+.n-optimism-9 .radio:nth-child(10)::before,
+.n-optimism-10 .radio:nth-child(11)::before,
+.n-optimism-11 .radio:nth-child(12)::before,
+.n-optimism-12 .radio:nth-child(13)::before,
+.n-optimism-13 .radio:nth-child(14)::before,
+.n-optimism-14 .radio:nth-child(15)::before,
+.n-optimism-15 .radio:nth-child(16)::before,
+.n-optimism-16 .radio:nth-child(17)::before,
+.n-optimism-17 .radio:nth-child(18)::before,
+.n-optimism-18 .radio:nth-child(19)::before,
+.n-optimism-19 .radio:nth-child(20)::before {
+  content: "• Optimism";
   display: block;
-  margin-left: 8px;
+  background: #f6e7e6;
   margin-bottom: 8px;
-  text-decoration: underline;
+  font-size: 1.4rem;
+  font-weight: 900;
+  padding: 12px 12px;
 }
 
-/*
-  nm = 2
-  na = 4
-  no = 4
-
-  => 
-
-  .nm-2
-
-  +
-
-  .na-6 (nm + na)
-
-  + 
-
-  .no-10 (nm + na + no)
-*/
-
 /* 
-.n-mainnet-1 .n-arbitrum-1 .radio:nth-child(3)
-.n-mainnet-1 .n-arbitrum-2 .radio:nth-child(4)
-...
-
-.n-mainnet-2 .n-arbitrum-1 .radio:nth-child(4)
-...
-
-.n-mainnet-1 .n-arbitrum-1 .n-optimism-1 .radio:nth-child(3); */
-
-/* 
-  CSS only mainnet/layer 2 separators END ===
+  PAYMENT FORM STYLING END ===
 */

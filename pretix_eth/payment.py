@@ -134,8 +134,9 @@ class Ethereum(BasePaymentProvider):
     def payment_form_fields(self):
         currency_type_choices = ()
         currency_type_choices_mainnet = ()
-        # currency_type_choices_arbitrum = ()
-        # currency_type_choices_optimism = ()
+        currency_type_choices_zk_sync = ()
+        currency_type_choices_arbitrum = ()
+        currency_type_choices_optimism = ()
         network_ids_selected = json.loads(self.settings._NETWORKS)
 
         if self.settings.ETH_RATE:
@@ -144,8 +145,14 @@ class Ethereum(BasePaymentProvider):
                     network_id
                 ].eth_currency_choice
 
-                if "-Ethereum" in currency_choice[0][0]:
+                if "Ethereum" in currency_choice[0][0]:
                     currency_type_choices_mainnet += currency_choice 
+                elif "Optimism" in currency_choice[0][0]:
+                    currency_type_choices_optimism += currency_choice 
+                elif "Arbitrum" in currency_choice[0][0]:
+                    currency_type_choices_arbitrum += currency_choice 
+                elif "ZkSync" in currency_choice[0][0]:
+                    currency_type_choices_zk_sync += currency_choice 
                 else: 
                     currency_type_choices += currency_choice
 
@@ -155,13 +162,34 @@ class Ethereum(BasePaymentProvider):
                     network_id
                 ].dai_currency_choice
 
-                if "-Ethereum" in currency_choice[0][0]:
+                if "Ethereum" in currency_choice[0][0]:
                     currency_type_choices_mainnet += currency_choice 
+                elif "Optimism" in currency_choice[0][0]:
+                    currency_type_choices_optimism += currency_choice 
+                elif "Arbitrum" in currency_choice[0][0]:
+                    currency_type_choices_arbitrum += currency_choice 
+                elif "ZkSync" in currency_choice[0][0]:
+                    currency_type_choices_zk_sync += currency_choice 
                 else: 
                     currency_type_choices += currency_choice
 
-        if len(currency_type_choices) == 0:
+        count_mainnet = len(currency_type_choices_mainnet)
+        count_zk_sync = len(currency_type_choices_zk_sync)
+        count_optimism = len(currency_type_choices_optimism)
+        count_arbitrum = len(currency_type_choices_arbitrum)
+        count_uncategorized = len(currency_type_choices) # Unhandled L2 options
+
+        if count_mainnet + count_optimism + count_arbitrum + count_uncategorized + count_zk_sync == 0:
             raise ImproperlyConfigured("No currencies configured")
+
+        class_name = "eth-payment-options n-mainnet-" + str(count_mainnet)
+
+        if count_zk_sync > 0:
+            class_name = class_name + " n-zk-sync-" + str(count_mainnet + count_uncategorized)
+        if count_arbitrum > 0:
+            class_name = class_name + " n-arbitrum-" + str(count_mainnet + count_uncategorized + count_zk_sync)
+        if count_optimism > 0:
+            class_name = class_name + " n-optimism-" + str(count_mainnet + count_uncategorized + count_zk_sync + count_arbitrum)
 
         form_fields = OrderedDict(
             list(super().payment_form_fields.items())
@@ -171,8 +199,8 @@ class Ethereum(BasePaymentProvider):
                     forms.ChoiceField(
                         label=_("Payment currency"),
                         help_text=_("Select the currency you will use for payment."),
-                        widget=forms.RadioSelect(attrs={"class": "n-mainnet-" + str(len(currency_type_choices_mainnet))}),
-                        choices=currency_type_choices_mainnet + currency_type_choices,
+                        widget=forms.RadioSelect(attrs={"class": class_name }),
+                        choices=currency_type_choices_mainnet + currency_type_choices + currency_type_choices_zk_sync + currency_type_choices_arbitrum + currency_type_choices_optimism,
                         initial="ETH"
                     ),
                 )
